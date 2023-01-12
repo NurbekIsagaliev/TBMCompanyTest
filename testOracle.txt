@@ -1,0 +1,59 @@
+Необходимо спроектировать триггера которые будут обрабатывать логику и целостность данных в данных таблицах.
+
+COMMENT ON TABLE sku IS 'Таблица каталог товаров.';
+
+COMMENT ON COLUMN sku.id IS 'Первичный ключ';
+
+COMMENT ON COLUMN sku.name IS 'Название товара.';
+
+COMMENT ON TABLE orders IS 'Таблица содержащая заказы.';
+
+COMMENT ON COLUMN orders.id IS 'Первичный ключ';
+
+COMMENT ON COLUMN orders.n_doc IS '№ заказа.';
+
+COMMENT ON COLUMN orders.date_doc IS 'Дата заказа.';
+
+COMMENT ON COLUMN orders.amount IS 'Сумма заказа расчетное значение (сумма деталей заказа).';
+
+COMMENT ON COLUMN orders.discount IS 'Скидка в процентах от 0 до 100.';
+
+COMMENT ON TABLE orders_detail IS 'Таблица содержащая заказы.';
+
+COMMENT ON COLUMN orders_detail.id IS 'Первичный ключ';
+
+COMMENT ON COLUMN orders_detail.id_order IS 'тдентификатор заказа';
+
+COMMENT ON COLUMN orders_detail.id_sku IS 'идентификатор товара';
+
+COMMENT ON COLUMN orders_detail.price IS 'Цена товара за единицу.';
+
+COMMENT ON COLUMN orders_detail.qty IS 'кол-во товара.';
+
+COMMENT ON COLUMN orders_detail.str_sum IS 'Сумма по строке с учетом скидки.';
+
+COMMENT ON COLUMN orders_detail.idx IS 'Порядковый номер строки заказа (не должно быть пропусков).';
+
+Функциональные требования:
+  //1) При изменении поля скидка (orders.discount) должны пересчитываться суммы по строкам заказа (orders_detail.str_sum).
+  //2) При добавлении строки заказа, удалении строки заказа  или изменении цены или количества по строке заказа должна изменяться сумма заказа (orders.amount).
+  //3) При изменении цены или количества по строке заказа должна автоматом пересчитываться сумма по строке заказа (orders_detail.str_sum).
+  //4) Поле в строке заказа orders_detail.idx  порядковый номер должен формироваться автоматически и в нумерации строк заказа не должно быть пропусков.
+    //Последовательность должна быть строго 1,2, … количество строк заказа.
+  //5) Значение скидки (orders.discount) может иметь значение от 0 до 100
+  //6) Сумма по строке вычисляется следующим образом = цена(orders_detail.price)*количество(orders_detail.qty)*(1-скидка(orders.discount)/100)
+ 
+Ограничения:
+  Изменять можно только следующие поля
+     //orders.n_doc
+     //orders.date_doc
+     //orders.discount
+    //orders_detail.id_order
+    //orders_detail.price
+    //orders_detail.qty
+    //orders_detail.id_sku
+    остальные пересчитываются автоматически.
+
+
+//amount = price*qty
+//str_sum = price * qty *(1-discount/100) 
